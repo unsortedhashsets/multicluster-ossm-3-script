@@ -49,8 +49,13 @@ for CTX in "${CLUSTERS[@]}"; do
   echo -e "\n➡️ [${CTX}] Ensure project and enable Istio injection"
   oc --context="${CTX}" get project sample \
     || oc --context="${CTX}" new-project sample
-  oc --context="${CTX}" label namespace sample istio-injection=enabled --overwrite
 
+  if [[ "${DATA_PLANE}" == "ambient" ]]; then
+    oc --context="${CTX}" label namespace sample istio.io/dataplane-mode=ambient --overwrite
+  else
+    oc --context="${CTX}" label namespace sample istio-injection=enabled --overwrite
+  fi
+  
   echo -e "\n➡️ [${CTX}] Deploy helloworld and sleep"
   oc --context="${CTX}" apply \
     -f https://raw.githubusercontent.com/openshift-service-mesh/istio/release-1.26/samples/helloworld/helloworld.yaml \
