@@ -29,12 +29,26 @@ if [[ "$CONTROL_PLANE" == "multi-primary" && "$NETWORK" == "multi-network" ]]; t
     NET=$( [[ "$CTX" == "${CTX_CLUSTER1}" ]] && echo "network1" || echo "network2" )
     CL_NAME=$( [[ "$CTX" == "${CTX_CLUSTER1}" ]] && echo "cluster1" || echo "cluster2" )
     export NET CL_NAME
-    echo "➡️  Installing Istio CNI on ${CTX}"
-    oc --context="${CTX}" get project istio-cni >/dev/null 2>&1 || oc --context="${CTX}" new-project istio-cni
-    envsubst < resources/istio-cni.yaml | oc --context="${CTX}" apply -f -
 
-    echo "➡️  Installing Istio on ${CTX}"
-    envsubst < resources/istio.yaml | oc --context="${CTX}" apply -f -
+    if [[ "$DATA_PLANE" == "ambient" ]]; then
+      echo "➡️  Installing Istio CNI on ${CTX}"
+      oc --context="${CTX}" get project istio-cni >/dev/null 2>&1 || oc --context="${CTX}" new-project istio-cni
+      envsubst < resources/ambient-istio-cni.yaml | oc --context="${CTX}" apply -f -
+
+      echo "➡️  Installing Istio on ${CTX}"
+      envsubst < resources/ambient-istio.yaml | oc --context="${CTX}" apply -f -
+
+      echo "➡️  Install ambient ztunnel on ${CTX}"
+      oc --context="${CTX}" get project ztunnel >/dev/null 2>&1 || oc --context="${CTX}" new-project ztunnel
+      envsubst < resources/ambient-ztunnel.yaml | oc --context="${CTX}" apply -f -
+    else 
+      echo "➡️  Installing Istio CNI on ${CTX}"
+      oc --context="${CTX}" get project istio-cni >/dev/null 2>&1 || oc --context="${CTX}" new-project istio-cni
+      envsubst < resources/istio-cni.yaml | oc --context="${CTX}" apply -f -
+
+      echo "➡️  Installing Istio on ${CTX}"
+      envsubst < resources/istio.yaml | oc --context="${CTX}" apply -f -
+    fi
 
     echo "➡️  Waiting for Istio control plane Ready on ${CTX}"
     oc --context="${CTX}" wait --for condition=Ready istio/default --timeout=3m
