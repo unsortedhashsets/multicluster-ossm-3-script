@@ -1,0 +1,22 @@
+apiVersion: sailoperator.io/v1
+kind: Istio
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  version: ${ISTIO_VERSION}
+  profile: ambient
+  values:
+    global:
+      meshID: mesh1
+      multiCluster:
+        clusterName: ${CL_NAME}
+      network: ${NET}
+    pilot:
+      trustedZtunnelNamespace: ztunnel
+  components:
+    pilot:
+      k8s:
+        env:
+          - name: AMBIENT_ENABLE_MULTI_NETWORK
+            value: "true"
