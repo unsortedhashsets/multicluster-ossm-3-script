@@ -31,6 +31,7 @@ if [[ "$CONTROL_PLANE" == "multi-primary" && "$NETWORK" == "multi-network" ]]; t
     export NET CL_NAME
 
     if [[ "$DATA_PLANE" == "ambient" ]]; then
+      echo "Ambient mode selected"
       echo "➡️  Installing Istio CNI on ${CTX}"
       oc --context="${CTX}" get project istio-cni >/dev/null 2>&1 || oc --context="${CTX}" new-project istio-cni
       envsubst < resources/ambient-istio-cni.yaml | oc --context="${CTX}" apply -f -
@@ -42,6 +43,7 @@ if [[ "$CONTROL_PLANE" == "multi-primary" && "$NETWORK" == "multi-network" ]]; t
       oc --context="${CTX}" get project ztunnel >/dev/null 2>&1 || oc --context="${CTX}" new-project ztunnel
       envsubst < resources/ambient-ztunnel.yaml | oc --context="${CTX}" apply -f -
     else 
+      echo "Side-car mode selected"
       echo "➡️  Installing Istio CNI on ${CTX}"
       oc --context="${CTX}" get project istio-cni >/dev/null 2>&1 || oc --context="${CTX}" new-project istio-cni
       envsubst < resources/istio-cni.yaml | oc --context="${CTX}" apply -f -
@@ -106,7 +108,8 @@ elif [[ "$CONTROL_PLANE" == "primary-remote" && "$NETWORK" == "multi-network" ]]
   envsubst < resources/istio-cni.yaml | oc --context="${CTX_CLUSTER1}" apply -f -
 
   echo "➡️  Installing primary Istio on ${CTX_CLUSTER1}"
-  oc --context="${CTX_CLUSTER1}" get project istio-system >/dev/null 2>&1 || oc --context="${CTX_CLUSTER1}" new-project istio-systemecho "➡️  Set the default network for the ${CTX_CLUSTER1} cluster"
+  oc --context="${CTX_CLUSTER1}" get project istio-system >/dev/null 2>&1 || oc --context="${CTX_CLUSTER1}" new-project istio-system
+  echo "➡️  Set the default network for the ${CTX_CLUSTER1} cluster"
   oc --context="${CTX_CLUSTER1}" label namespace istio-system topology.istio.io/network=network1
   envsubst < resources/primary-istio.yaml | oc --context="${CTX_CLUSTER1}" apply -f -
   oc --context="${CTX_CLUSTER1}" wait --for condition=Ready istio/default --timeout=3m

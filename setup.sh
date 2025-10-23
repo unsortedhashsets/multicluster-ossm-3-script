@@ -19,15 +19,15 @@ echo "CTX_CLUSTER2: $CTX_CLUSTER2"
 
 # Configuration (Section 5.1)
 # Control plane topology: "multi-primary" or "primary-remote"
-: "${CONTROL_PLANE:="primary-remote"}"
+: "${CONTROL_PLANE:="multi-primary"}"
 # Network topology (must be "multi-network" for Sections 5.3/5.4)
 : "${NETWORK:="multi-network"}"
 # Istio version
-: "${ISTIO_VERSION:="v1.27.0"}"
+: "${ISTIO_VERSION:="v1.27.2"}"
 # Data plane (side-cars or ambient)
-: "${DATA_PLANE:="side-cars"}"
+: "${DATA_PLANE:="ambient"}"
 
-export CONTROL_PLANE NETWORK ISTIO_VERSION
+export CONTROL_PLANE NETWORK ISTIO_VERSION DATA_PLANE
 echo "CONTROL_PLANE: $CONTROL_PLANE"
 echo "NETWORK: $NETWORK"
 echo "ISTIO_VERSION: $ISTIO_VERSION"
@@ -42,4 +42,4 @@ echo "DATA_PLANE: $DATA_PLANE"
 # Run test.sh
 ./test.sh
 
-echo "Setup complete. CTX_CLUSTER1 and CTX_CLUSTER2 are available for use in subsequent scripts."
+echo "Setup complete"
