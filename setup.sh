@@ -23,9 +23,9 @@ echo "CTX_CLUSTER2: $CTX_CLUSTER2"
 # Network topology (must be "multi-network" for Sections 5.3/5.4)
 : "${NETWORK:="multi-network"}"
 # Istio version
-: "${ISTIO_VERSION:="v1.27.2"}"
+: "${ISTIO_VERSION:="v1.27.3"}"
 # Data plane (side-cars or ambient)
-: "${DATA_PLANE:="ambient"}"
+: "${DATA_PLANE:="side-cars"}"
 
 export CONTROL_PLANE NETWORK ISTIO_VERSION DATA_PLANE
 echo "CONTROL_PLANE: $CONTROL_PLANE"

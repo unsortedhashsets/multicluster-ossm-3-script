@@ -58,23 +58,23 @@ for CTX in "${CLUSTERS[@]}"; do
 
   echo -e "\n➡️ [${CTX}] Deploy helloworld and sleep"
   oc --context="${CTX}" apply \
-    -f https://raw.githubusercontent.com/openshift-service-mesh/istio/release-1.26/samples/helloworld/helloworld.yaml \
+    -f https://raw.githubusercontent.com/openshift-service-mesh/istio/release-1.27/samples/helloworld/helloworld.yaml \
     -l service=helloworld -n sample
   if [[ "${CTX}" == "${CTX_CLUSTER1}" ]]; then
     oc --context="${CTX}" apply \
-      -f https://raw.githubusercontent.com/openshift-service-mesh/istio/release-1.26/samples/helloworld/helloworld.yaml \
+      -f https://raw.githubusercontent.com/openshift-service-mesh/istio/release-1.27/samples/helloworld/helloworld.yaml \
       -l version=v1 -n sample
     oc --context="${CTX}" wait --for condition=available -n sample deployment/helloworld-v1
   else
     oc --context="${CTX}" apply \
-      -f https://raw.githubusercontent.com/openshift-service-mesh/istio/release-1.26/samples/helloworld/helloworld.yaml \
+      -f https://raw.githubusercontent.com/openshift-service-mesh/istio/release-1.27/samples/helloworld/helloworld.yaml \
       -l version=v2 -n sample
     oc --context="${CTX}" wait --for condition=available -n sample deployment/helloworld-v2
     if [[ "${DATA_PLANE}" == "ambient" ]]; then
       oc --context="${CTX}" label svc -n sample -l app=helloworld istio.io/global=true --overwrite
     fi
   fi
-  oc --context="${CTX}" apply -n sample -f https://raw.githubusercontent.com/istio/istio/release-1.26/samples/sleep/sleep.yaml
+  oc --context="${CTX}" apply -n sample -f https://raw.githubusercontent.com/istio/istio/release-1.27/samples/sleep/sleep.yaml
 
   echo -e "\n➡️ [${CTX}] Waiting for deployments to become ready"
   oc --context="${CTX}" wait --for=condition=available deployment/sleep -n sample --timeout=2m
@@ -88,10 +88,10 @@ for CTX in "${CLUSTERS[@]}"; do
   for i in {1..100}; do
     RESPONSE=$(oc --context="${CTX}" exec -n sample deploy/sleep -c sleep -- curl -sS helloworld.sample:5000/hello)
     echo "[${CTX}] $i: $RESPONSE"
-    if echo "$RESPONSE" | grep -q 'v1'; then
+    if echo "$RESPONSE" | grep -q ' v1'; then
       ((v1_count=v1_count+1))
     fi
-    if echo "$RESPONSE" | grep -q 'v2'; then
+    if echo "$RESPONSE" | grep -q ' v2'; then
       ((v2_count=v2_count+1))
     fi
     if [[ $v1_count -gt 0 && $v2_count -gt 0 ]]; then

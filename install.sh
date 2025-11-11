@@ -37,11 +37,17 @@ if [[ "$CONTROL_PLANE" == "multi-primary" && "$NETWORK" == "multi-network" ]]; t
       envsubst < resources/ambient-istio-cni.yaml | oc --context="${CTX}" apply -f -
 
       echo "➡️  Installing Istio on ${CTX}"
+      oc --context="${CTX}" get project istio-system >/dev/null 2>&1 || oc --context="${CTX}" new-project istio-system
       envsubst < resources/ambient-istio.yaml | oc --context="${CTX}" apply -f -
+
+      echo "➡️  Label istio-system namespace for the ${CTX} cluster"
+      oc --context="${CTX}" label namespace istio-system topology.istio.io/network=${NET} --overwrite
 
       echo "➡️  Install ambient ztunnel on ${CTX}"
       oc --context="${CTX}" get project ztunnel >/dev/null 2>&1 || oc --context="${CTX}" new-project ztunnel
       envsubst < resources/ambient-ztunnel.yaml | oc --context="${CTX}" apply -f -
+
+      echo "➡️   ${CTX}"
     else 
       echo "Side-car mode selected"
       echo "➡️  Installing Istio CNI on ${CTX}"
@@ -49,6 +55,7 @@ if [[ "$CONTROL_PLANE" == "multi-primary" && "$NETWORK" == "multi-network" ]]; t
       envsubst < resources/istio-cni.yaml | oc --context="${CTX}" apply -f -
 
       echo "➡️  Installing Istio on ${CTX}"
+      oc --context="${CTX}" get project istio-system >/dev/null 2>&1 || oc --context="${CTX}" new-project istio-system
       envsubst < resources/istio.yaml | oc --context="${CTX}" apply -f -
     fi
 
@@ -56,12 +63,17 @@ if [[ "$CONTROL_PLANE" == "multi-primary" && "$NETWORK" == "multi-network" ]]; t
     oc --context="${CTX}" wait --for condition=Ready istio/default --timeout=3m
 
     echo "➡️  Deploying east-west gateway on ${CTX}"
-    if [[ "$CTX" == "${CTX_CLUSTER1}" ]]; then
-      oc --context="${CTX}" apply -f https://raw.githubusercontent.com/istio-ecosystem/sail-operator/main/docs/deployment-models/resources/east-west-gateway-net1.yaml
+    if [[ "${DATA_PLANE}" == "ambient" ]]; then
+      echo "→ Ambient mode: applying HBONE east-west gateway"
+      envsubst < resources/ambient-east-west-gateway.yaml | oc --context="${CTX}" apply -f -
     else
-      oc --context="${CTX}" apply -f https://raw.githubusercontent.com/istio-ecosystem/sail-operator/main/docs/deployment-models/resources/east-west-gateway-net2.yaml
+      echo "➡️ Sidecar mode: applying side-car east-west gateway"
+      if [[ "$CTX" == "${CTX_CLUSTER1}" ]]; then
+        oc --context="${CTX}" apply -f https://raw.githubusercontent.com/istio-ecosystem/sail-operator/main/docs/deployment-models/resources/east-west-gateway-net1.yaml
+      else
+        oc --context="${CTX}" apply -f https://raw.githubusercontent.com/istio-ecosystem/sail-operator/main/docs/deployment-models/resources/east-west-gateway-net2.yaml
+      fi
     fi
-
     echo "➡️  Exposing services through gateway on ${CTX}"
     oc --context="${CTX}" apply -n istio-system -f https://raw.githubusercontent.com/istio-ecosystem/sail-operator/main/docs/deployment-models/resources/expose-services.yaml
   done

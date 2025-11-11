@@ -35,7 +35,7 @@ export CTX_CLUSTER2=cluster2-context
 export CONTROL_PLANE=primary-remote   # or multi-primary
 export NETWORK=multi-network
 export DATA_PLANE=side-car            # or ambient
-export ISTIO_VERSION=v1.26.4
+export ISTIO_VERSION=v1.27.3
 
 # Optional: source defaults from setup.sh (it sets defaults and exports vars)
 ./setup.sh

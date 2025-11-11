@@ -6,6 +6,7 @@ spec:
   namespace: ztunnel
   profile: ambient
   values:
-    multiCluster:
-      clusterName: ${CL_NAME}
-    network: ${NET}
+    ztunnel:
+      multiCluster:
+        clusterName: ${CL_NAME}
+      network: ${NET}
