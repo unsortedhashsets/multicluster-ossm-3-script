@@ -4,4 +4,4 @@ metadata:
   name: default
 spec:
   namespace: istio-cni
-  profile: ambient 
+  profile: ambient

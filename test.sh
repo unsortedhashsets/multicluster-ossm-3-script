@@ -52,7 +52,7 @@ for CTX in "${CLUSTERS[@]}"; do
 
   if [[ "${DATA_PLANE}" == "ambient" ]]; then
     oc --context="${CTX}" label namespace sample istio.io/dataplane-mode=ambient --overwrite
-  else
+  elif [[ "${DATA_PLANE}" == "side-cars" ]]; then
     oc --context="${CTX}" label namespace sample istio-injection=enabled --overwrite
   fi
 

@@ -28,5 +28,3 @@ spec:
         mode: Terminate
         options:
           gateway.istio.io/tls-terminate-mode: ISTIO_MUTUAL
-
-
