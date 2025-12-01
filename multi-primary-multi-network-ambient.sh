@@ -51,9 +51,6 @@ for CTX in "${CLUSTERS[@]}"; do
     echo "➡️  Applying HBONE east-west gateway"
     envsubst < resources/ambient-east-west-gateway.yaml | oc --context="${CTX}" apply -f -
 
-    echo "➡️  Exposing services through gateway on ${CTX}"
-    oc --context="${CTX}" apply -n istio-system -f https://raw.githubusercontent.com/istio-ecosystem/sail-operator/main/docs/deployment-models/resources/expose-services.yaml
-
     echo "➡️  Ensuring ServiceAccount istio-reader-service-account exists in ${CTX}/istio-system"
     if ! oc --context="${CTX}" -n istio-system get sa istio-reader-service-account &>/dev/null; then
         oc --context="${CTX}" -n istio-system create sa istio-reader-service-account

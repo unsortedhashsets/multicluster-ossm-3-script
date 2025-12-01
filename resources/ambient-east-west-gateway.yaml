@@ -18,6 +18,8 @@ metadata:
     istio: eastwestgateway
     istio.io/rev: default
     topology.istio.io/network: ${NET}
+  annotations:
+    networking.istio.io/service-type: "LoadBalancer"
 spec:
   gatewayClassName: "istio-east-west"
   listeners:

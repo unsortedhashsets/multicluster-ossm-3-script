@@ -123,7 +123,7 @@ create_apply_ca_secret() {
     oc --context="$CTX" new-project istio-system
     echo "   Created namespace istio-system in $CTX."
   fi
-  oc --context="$CTX" label namespace istio-system topology.istio.io/network=$NET --overwrite
+
   # Create or update the cacerts secret
   if oc --context="$CTX" get secret -n istio-system cacerts >/dev/null 2>&1; then
     oc --context="$CTX" delete secret -n istio-system cacerts
