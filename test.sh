@@ -70,9 +70,9 @@ for CTX in "${CLUSTERS[@]}"; do
       -f https://raw.githubusercontent.com/openshift-service-mesh/istio/release-1.27/samples/helloworld/helloworld.yaml \
       -l version=v2 -n sample
     oc --context="${CTX}" wait --for condition=available -n sample deployment/helloworld-v2
-    if [[ "${DATA_PLANE}" == "ambient" ]]; then
-      oc --context="${CTX}" label svc -n sample -l app=helloworld istio.io/global=true --overwrite
-    fi
+  fi
+  if [[ "${DATA_PLANE}" == "ambient" ]]; then
+    oc --context="${CTX}" label svc -n sample -l app=helloworld istio.io/global=true --overwrite
   fi
   oc --context="${CTX}" apply -n sample -f https://raw.githubusercontent.com/istio/istio/release-1.27/samples/sleep/sleep.yaml
 
