@@ -14,9 +14,5 @@ spec:
       network: ${NET}
     pilot:
       trustedZtunnelNamespace: ztunnel
-  components:
-    pilot:
-      k8s:
-        env:
-          - name: AMBIENT_ENABLE_MULTI_NETWORK
-            value: "true"
+      env:
+        AMBIENT_ENABLE_MULTI_NETWORK: "true"
