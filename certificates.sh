@@ -122,6 +122,8 @@ create_apply_ca_secret() {
   if ! oc --context="$CTX" get project istio-system >/dev/null 2>&1; then
     oc --context="$CTX" new-project istio-system
     echo "   Created namespace istio-system in $CTX."
+    oc --context="${CTX}" label namespace istio-system topology.istio.io/network=${NET} --overwrite
+    echo "➡️  Label istio-system namespace for the ${CTX} cluster: topology.istio.io/network=${NET}"
   fi
 
   # Create or update the cacerts secret
@@ -142,7 +144,7 @@ for IDX in "${!CLUSTERS[@]}"; do
   CTX="${CLUSTERS[$IDX]}"
   LC=$(echo "$CTX" | tr '[:upper:]' '[:lower:]')
   CL_DIR="${CA_DIR}/${LC}"
-  NET="network$((IDX+1))"
+  NET=$( [[ "$CTX" == "${CTX_CLUSTER1}" ]] && echo "network1" || echo "network2" )
   create_intermediate_ca "$CTX"
   create_apply_ca_secret "$CTX" "$LC" "$CL_DIR" "$NET"
 done

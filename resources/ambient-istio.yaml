@@ -2,9 +2,9 @@ apiVersion: sailoperator.io/v1
 kind: Istio
 metadata:
   name: default
-  namespace: istio-system
 spec:
   version: ${ISTIO_VERSION}
+  namespace: istio-system
   profile: ambient
   values:
     global:

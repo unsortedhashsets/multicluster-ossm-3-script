@@ -38,9 +38,6 @@ for CTX in "${CLUSTERS[@]}"; do
     oc --context="${CTX}" get project istio-system >/dev/null 2>&1 || oc --context="${CTX}" new-project istio-system
     envsubst < resources/ambient-istio.yaml | oc --context="${CTX}" apply -f -
 
-    echo "➡️  Label istio-system namespace for the ${CTX} cluster"
-    oc --context="${CTX}" label namespace istio-system topology.istio.io/network=${NET} --overwrite
-
     echo "➡️  Install ambient ztunnel on ${CTX}"
     oc --context="${CTX}" get project ztunnel >/dev/null 2>&1 || oc --context="${CTX}" new-project ztunnel
     envsubst < resources/ambient-ztunnel.yaml | oc --context="${CTX}" apply -f -
@@ -50,6 +47,9 @@ for CTX in "${CLUSTERS[@]}"; do
 
     echo "➡️  Applying HBONE east-west gateway"
     envsubst < resources/ambient-east-west-gateway.yaml | oc --context="${CTX}" apply -f -
+
+    echo "➡️  Wait gateway is programmed with an external address on ${CTX}..."
+    oc --context="${CTX}" wait gateway/istio-eastwestgateway -n istio-system --for=condition=Programmed=True --timeout=3m
 
     echo "➡️  Ensuring ServiceAccount istio-reader-service-account exists in ${CTX}/istio-system"
     if ! oc --context="${CTX}" -n istio-system get sa istio-reader-service-account &>/dev/null; then

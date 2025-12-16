@@ -1,9 +1,8 @@
----
 kind: Gateway
 apiVersion: gateway.networking.k8s.io/v1
 metadata:
-  name: istio-eastwestgateway
   namespace: istio-system
+  name: istio-eastwestgateway
   labels:
     topology.istio.io/network: ${NET}
 spec:

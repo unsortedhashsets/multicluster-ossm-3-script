@@ -78,6 +78,8 @@ for CTX in "${CLUSTERS[@]}"; do
 
   echo -e "\n➡️ [${CTX}] Waiting for deployments to become ready"
   oc --context="${CTX}" wait --for=condition=available deployment/sleep -n sample --timeout=2m
+
+  oc get all -n sample --context="${CTX}"
 done
 
 # --- Test cross-cluster traffic from each sleep pod ---

@@ -15,7 +15,7 @@ CLUSTERS=("${CTX_CLUSTER1}" "${CTX_CLUSTER2}")
 
 for CTX in "${CLUSTERS[@]}"; do
   echo -e "\n➡️ [${CTX}] Deleting namespaces in cluster '${CTX}'"
-  oc --context="${CTX}" delete namespace istio-system istio-cni ztunnel sample --ignore-not-found
+  oc --context="${CTX}" delete istio/default ns/istio-system ns/sample ns/istio-cni ns/ztunnel ns/sample --ignore-not-found
 done
 
 echo "✅ Namespaces 'istio-system' and 'sample' removed from both clusters."
