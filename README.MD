@@ -20,7 +20,7 @@ These must be set before running the install/test workflow (the `setup.sh` scrip
 - `CONTROL_PLANE` - `multi-primary` or `primary-remote` (controls install paths in `install.sh`).
 - `NETWORK` - `multi-network` (network topology; required for the sample scenarios).
 - `ISTIO_VERSION` - Istio operator / resource version used in resource templates (e.g. `v1.26.4`).
-- `DATA_PLANE` - `side-car` or `ambient` (controls whether sidecar or ambient data plane is used).
+- `DATA_PLANE` - `side-cars` or `ambient` (controls whether sidecar or ambient data plane is used).
 
 Examples (quick start)
 ----------------------
@@ -31,7 +31,7 @@ export CTX_CLUSTER1=cluster1-context
 export CTX_CLUSTER2=cluster2-context
 export CONTROL_PLANE=primary-remote   # or multi-primary
 export NETWORK=multi-network
-export DATA_PLANE=side-car            # or ambient
+export DATA_PLANE=side-cars            # or ambient
 export ISTIO_VERSION=v1.27.3
 
 # Install deployment

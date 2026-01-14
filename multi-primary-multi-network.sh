@@ -29,7 +29,7 @@ for CTX in "${CLUSTERS[@]}"; do
     CL_NAME=$( [[ "$CTX" == "${CTX_CLUSTER1}" ]] && echo "cluster1" || echo "cluster2" )
     export NET CL_NAME
 
-    echo "Side-car mode selected"
+    echo "Side-cars mode selected"
     echo "➡️  Installing Istio CNI on ${CTX}"
     oc --context="${CTX}" get project istio-cni >/dev/null 2>&1 || oc --context="${CTX}" new-project istio-cni
     envsubst < resources/istio-cni.yaml | oc --context="${CTX}" apply -f -
@@ -41,7 +41,7 @@ for CTX in "${CLUSTERS[@]}"; do
     echo "➡️  Waiting for Istio control plane Ready on ${CTX}"
     oc --context="${CTX}" wait --for condition=Ready istio/default --timeout=3m
 
-    echo "➡️ Sidecar mode: applying side-car east-west gateway"
+    echo "➡️ Sidecar mode: applying side-cars east-west gateway"
     if [[ "$CTX" == "${CTX_CLUSTER1}" ]]; then
         oc --context="${CTX}" apply -f https://raw.githubusercontent.com/istio-ecosystem/sail-operator/main/docs/deployment-models/resources/east-west-gateway-net1.yaml
     else
