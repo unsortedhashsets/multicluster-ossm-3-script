@@ -5,9 +5,6 @@ This folder contains a small set of Bash scripts and YAML templates to automate 
 Files
 -----
 - `setup.sh` - Pre-flight checks and central configuration. Exports configuration variables used by the other scripts (for example: `CONTROL_PLANE`, `NETWORK`, `ISTIO_VERSION`).
-- `install.sh` - Installs Istio components and configures the topology. Supports two control-plane topologies:
-  - `multi-primary` (multi-primary, multi-network)
-  - `primary-remote` (primary control plane + remote clusters)
   It reads YAML templates from `resources/` and applies them with `envsubst` so templates can contain placeholders (e.g. `${CL_NAME}`, `${NET}`, `${ISTIO_VERSION}`, `${DISCOVERY_ADDRESS}`).
 - `certificates.sh` - Generates CA/intermediate certificates and applies the resulting secrets to clusters. Designed to be idempotent and to use variables for cluster contexts and networks.
 - `test.sh` - Runs automated checks and traffic tests to validate multicluster connectivity and service reachability. It performs `istioctl remote-clusters` checks, deploys sample workloads (v1/v2), issues multiple curl calls from pods, and counts responses.
@@ -37,7 +34,7 @@ export NETWORK=multi-network
 export DATA_PLANE=side-car            # or ambient
 export ISTIO_VERSION=v1.27.3
 
-# Optional: source defaults from setup.sh (it sets defaults and exports vars)
+# Install deployment
 ./setup.sh
 
 # Run tests
