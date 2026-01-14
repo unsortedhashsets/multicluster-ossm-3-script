@@ -4,7 +4,6 @@ metadata:
   name: default
 spec:
   namespace: ztunnel
-  profile: ambient
   values:
     ztunnel:
       multiCluster:
